@@ -1,0 +1,39 @@
+<h2>Pop Image via URL</h2>
+<p>Image URL:<input id="imgurl" placeholder="http://" /></p>
+<button id="pop">Pop</button>
+<button id="cancel">Close</button>
+<script>
+
+window.onload = (e) =>{
+  // auto focus
+  const urlInput = document.getElementById('imgurl');
+  urlInput.focus();
+}
+
+document.getElementById('pop').onclick = () => {
+  const urlInput = document.getElementById('imgurl');
+  const imgurl = urlInput.value;
+
+  fetch(imgurl).then(r => {
+    if ((r.status+"")[0] != "2") throw Error('HTTP ${r.status} ${r.statusText}')
+    return r.arrayBuffer()
+  }).then(a => parent.postMessage({ pluginMessage: { type: 'pop-image', data: new Uint8Array(a) }}, '*'))
+  .catch(err => parent.postMessage({ pluginMessage: { error: ""+err }}, '*'))
+//   let request = new XMLHttpRequest()
+//     // This link has random lorem ipsum text
+//     request.open('GET', imgurl);
+//     request.responseType = 'arraybuffer';
+//     request.onload = () => {
+//       let imageArray = request.response;
+//       console.log(imageArray);
+//       window.parent.postMessage({pluginMessage: { type: 'pop-image',  imageArray}}, '*');
+//     };
+//     request.send();
+// }
+}
+
+document.getElementById('cancel').onclick = () => {
+  parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
+}
+
+</script>
