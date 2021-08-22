@@ -12,7 +12,7 @@ figma.ui.onmessage = msg => {
     // One way of distinguishing between different types of messages sent from
     // your HTML page is to use an object with a "type" property like this.
     if (msg.type === 'pop-image' && msg.data && msg.data.length) {
-        addImageToCanvas(msg.data);
+        addImageToCanvas(msg.data, msg.scaleMode);
         // for (let i = 0; i < msg.count; i++) {
         //   const rect = figma.createRectangle();
         //   rect.x = i * 150;
@@ -31,10 +31,10 @@ figma.ui.onmessage = msg => {
     figma.closePlugin();
 };
 // Function that creates a rectangle on canvas with an image fill from image data
-function addImageToCanvas(data) {
+function addImageToCanvas(data, scaleMode) {
     let imageHash = figma.createImage(data).hash;
     let selectNode = figma.currentPage.selection[0];
     if (!selectNode)
         return;
-    selectNode.fills = [{ type: "IMAGE", scaleMode: "FILL", imageHash }];
+    selectNode.fills = [{ type: "IMAGE", scaleMode: scaleMode, imageHash }];
 }

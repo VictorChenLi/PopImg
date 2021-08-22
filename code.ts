@@ -1,6 +1,8 @@
 // This plugin will open a window to prompt the user to enter a number, and
 // it will then create that many rectangles on the screen.
 
+import { isConstructorDeclaration } from "./node_modules/typescript/lib/typescript";
+
 // This file holds the main code for the plugins. It has access to the *document*.
 // You can access browser APIs in the <script> tag inside "ui.html" which has a
 // full browser environment (see documentation).
@@ -15,7 +17,7 @@ figma.ui.onmessage = msg => {
   // One way of distinguishing between different types of messages sent from
   // your HTML page is to use an object with a "type" property like this.
   if (msg.type === 'pop-image' && msg.data && msg.data.length) {
-    addImageToCanvas(msg.data)
+    addImageToCanvas(msg.data, msg.scaleMode)
     // for (let i = 0; i < msg.count; i++) {
     //   const rect = figma.createRectangle();
     //   rect.x = i * 150;
@@ -35,9 +37,9 @@ figma.ui.onmessage = msg => {
 };
 
 // Function that creates a rectangle on canvas with an image fill from image data
-function addImageToCanvas(data) {
-  let imageHash = figma.createImage(data).hash
+function addImageToCanvas(data, scaleMode) {
+  let imageHash = figma.createImage(data).hash;
   let selectNode = figma.currentPage.selection[0] as GeometryMixin;
   if(!selectNode) return;
-  selectNode.fills = [ { type: "IMAGE", scaleMode: "FILL", imageHash } ]
+  selectNode.fills = [ { type: "IMAGE", scaleMode: scaleMode, imageHash } ];
 }

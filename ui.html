@@ -1,5 +1,13 @@
 <h2>Pop Image via URL</h2>
 <p>Image URL:<input id="imgurl" placeholder="http://" /></p>
+<p>Scale Mode:
+  <select name="scaleMode" id="scaleMode">
+    <option value="FILL">Fill</option>
+    <option value="FIT">Fit</option>
+    <option value="CROP">Crop</option>
+    <option value="TILE">Tile</option>
+  </select>
+</p>
 <button id="pop">Pop</button>
 <button id="cancel">Close</button>
 <script>
@@ -12,12 +20,15 @@ window.onload = (e) =>{
 
 document.getElementById('pop').onclick = () => {
   const urlInput = document.getElementById('imgurl');
+  const scaleModeInput = document.getElementById('scaleMode');
   const imgurl = urlInput.value;
+  const scaleMode = scaleModeInput.value;
+  console.log(scaleMode);
 
   fetch(imgurl).then(r => {
     if ((r.status+"")[0] != "2") throw Error('HTTP ${r.status} ${r.statusText}')
     return r.arrayBuffer()
-  }).then(a => parent.postMessage({ pluginMessage: { type: 'pop-image', data: new Uint8Array(a) }}, '*'))
+  }).then(a => parent.postMessage({ pluginMessage: { type: 'pop-image', data: new Uint8Array(a), scaleMode: scaleMode }}, '*'))
   .catch(err => parent.postMessage({ pluginMessage: { error: ""+err }}, '*'))
 //   let request = new XMLHttpRequest()
 //     // This link has random lorem ipsum text
