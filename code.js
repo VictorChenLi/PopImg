@@ -20,6 +20,9 @@ figma.ui.onmessage = (msg) => {
     return;
   } else if (msg.type === "pop-image" && msg.data && msg.data.length) {
     addImageToCanvas(msg.data, msg.scaleMode);
+  } else if (msg.type === "browser") {
+    figma.ui.resize(1000, 800);
+    return;
   } else if (msg.type === "error") {
     figma.notify(msg.error);
     return;
